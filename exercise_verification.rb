@@ -3,6 +3,11 @@
 def verify_ex_4!
   start_time = Time.now.to_f
 
+  sleep 1
+  easy_stuff_started = Redis.current.get('ex_4:the_easy_stuff:started')
+  hard_stuff_started = Redis.current.get('ex_4:the_hard_stuff:started')
+  return unless easy_stuff_started || hard_stuff_started
+
   until Redis.current.get('ex_4:the_hard_stuff:finished')
     sleep 0.2
     break if Time.now.to_f - start_time > 8.0
