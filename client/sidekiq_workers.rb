@@ -14,6 +14,5 @@ class GetRequestSender
 
     # For exercise 5, replace this comment with code that
     # retries the request if it fails
-    # fail unless response.code == 200
   end
 end

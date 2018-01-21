@@ -45,27 +45,27 @@ GetRequestSender.new.perform('/i_am_making_requests', by_using: 'a_sidekiq_worke
 # worker twice, first to send an *asynchronous* GET request to /the_hard_stuff,
 # and second to send an *asynchronous* GET request to /the_easy_stuff.
 
-# Verify that the 'easy' response-message appears before the hard response, even 
-# though you sent the hard request first.  
+# You should be able to verify that the 'easy' response-message appears before 
+# the hard response, even though you sent the hard request first.  
 
 # Important notes!
 #  - After you edit the sidekiq file, you will have to restart sidekiq
 #    - Use `ctrl-C` to kill off the old sidekiq job(s)
 #    - To start them again, the command is `bundle exec sidekiq -r ./client/sidekiq_workers.rb`
 #  - Output from Sidekiq workers won't appear in the terminal where you ran 'main.rb'.
-#    Instead, it'll appear in the sidekiq terminal
-#  - Question for you: why does all of this have to be this way?
+#    Instead, it'll appear in the sidekiq terminal.
+#  - Question to think about: why does all of this have to be this way?
 
-# <replace this line with the first call>
+GetRequestSender.perform_async('/the_hard_stuff')
 sleep 0.1
-# <replace this line with the second call>
+GetRequestSender.perform_async('/the_easy_stuff')
 
 verify_ex_4!
 
 
 ##################################################
 # Exercise 5: Retrying through error-handling
-# The server is a bit...touchy, and it doesn't always respond positively to 
+# This server is a bit...touchy, and it doesn't always respond positively to 
 # your requests.  Fortunately, it's not too hard to set up sidekiq to just
 # try your requests again in a bit and hope that the server is in a better mood.
 # A. Change the sidekiq worker so that it will retry requests unless the response
