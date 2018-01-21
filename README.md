@@ -14,6 +14,7 @@ The setup for this exercise is a bit complicated.  Sorry.
 1. Bring in this repo, and its dependencies.
   ```bash
   $ git clone <copy the address from github>
+  $ cd sidekiq-and-http-exercise
   $ bundle install
   ```
 
