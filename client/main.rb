@@ -14,7 +14,6 @@ require_relative '../exercise_verification'
 
 response = HttpConnection.get('/')
 # puts # <fill this in>
-puts JSON.parse(response.body)['message']
 
 
 ##################################################
@@ -27,16 +26,6 @@ puts JSON.parse(response.body)['message']
 
 numbers = []
 # <replace this with your code!>
-stop = false
-until stop do
-  response = HttpConnection.get('/number')
-  parsed_response = JSON.parse(response.body)
-  numbers << parsed_response['number']
-  stop = parsed_response['stop_asking']
-end
-sum = numbers.inject(&:+)
-response = HttpConnection.post('/sum', body: { the_sum: sum })
-puts JSON.parse(response.body)['message']
 
 ##################################################
 # Exercise 3: Introducing sidekiq
@@ -68,10 +57,8 @@ GetRequestSender.new.perform('/i_am_making_requests', by_using: 'a_sidekiq_worke
 #  - Question for you: why does all of this have to be this way?
 
 # <replace this line with the first call>
-GetRequestSender.perform_async('/the_hard_stuff')
 sleep 0.1
 # <replace this line with the second call>
-GetRequestSender.perform_async('/the_easy_stuff')
 
 verify_ex_4!
 
@@ -88,7 +75,6 @@ verify_ex_4!
 # (Remember to restart sidekiq after editing the file.)
 
 # <code goes here>
-GetRequestSender.perform_async('/touchy')
 
 verify_ex_5! # This can take up to 30 seconds
 
