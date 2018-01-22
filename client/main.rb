@@ -56,9 +56,9 @@ GetRequestSender.new.perform('/i_am_making_requests', by_using: 'a_sidekiq_worke
 #    Instead, it'll appear in the sidekiq terminal.
 #  - Question to think about: why does all of this have to be this way?
 
-GetRequestSender.perform_async('/the_hard_stuff')
+# <insert first call here>
 sleep 0.1
-GetRequestSender.perform_async('/the_easy_stuff')
+# <insert second call here>
 
 verify_ex_4!
 
