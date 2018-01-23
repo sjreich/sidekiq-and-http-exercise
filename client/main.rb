@@ -12,8 +12,27 @@ require_relative '../exercise_verification'
 # B. Parse the JSON response, and use `puts` to print the message portion to the
 # screen.
 
+module HTTParty
+  module ClassMethods
+    methods = [:get, :post]
+    methods.each do |method|
+      old = instance_method(method)
+
+      # The real trick here would be to take the instance_variables of response
+      # and turn those into the keys of the JSON object
+      define_method(method) do |path, options = {}, &block|
+        response = old.bind(self).call(path, options, &block)
+        result = JSON.parse(response.body)
+        result["code"] = response.code
+        result
+      end
+    end
+  end
+end
+
+
 response = HttpConnection.get('/')
-puts # <fill this in>
+puts response["message"]
 
 
 ##################################################
@@ -25,7 +44,13 @@ puts # <fill this in>
 # C. Use `puts` to print the message portion of the response to the screen.
 
 numbers = []
-# <replace this with your code!>
+response = HttpConnection.get('/number')
+until response["stop_asking"]
+  numbers << response["number"].to_i
+  response = HttpConnection.get( '/number')
+end
+numbers << response["number"].to_i
+puts HttpConnection.post('/sum', 'body': { 'the_sum': numbers.inject(:+)})["message"]
 
 ##################################################
 # Exercise 3: Introducing sidekiq
@@ -56,9 +81,9 @@ GetRequestSender.new.perform('/i_am_making_requests', by_using: 'a_sidekiq_worke
 #    Instead, it'll appear in the sidekiq terminal.
 #  - Question to think about: why does all of this have to be this way?
 
-# <insert first call here>
+GetRequestSender.perform_async('/the_hard_stuff')
 sleep 0.1
-# <insert second call here>
+GetRequestSender.perform_async('/the_easy_stuff')
 
 verify_ex_4!
 
@@ -74,8 +99,7 @@ verify_ex_4!
 #
 # (Remember to restart sidekiq after editing the file.)
 
-# <code goes here>
-
+GetRequestSender.perform_async('/touchy')
 verify_ex_5! # This can take up to 30 seconds
 
 

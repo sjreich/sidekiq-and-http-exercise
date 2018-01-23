@@ -8,11 +8,9 @@ class GetRequestSender
   sidekiq_retry_in { 0 }
 
   def perform(path, params={})
-    # For exercise 3, replace this comment with code that
-    # sends the request, parses the response, and uses `puts` to 
-    # print the message part of the response
+    request = HttpConnection.get(path, 'body': params)
+    raise Exception unless request["code"] == 200
 
-    # For exercise 5, replace this comment with code that
-    # retries the request if it fails
+    puts request["message"]
   end
 end
