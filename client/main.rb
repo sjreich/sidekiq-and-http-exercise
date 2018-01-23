@@ -44,9 +44,13 @@ puts response["message"]
 # C. Use `puts` to print the message portion of the response to the screen.
 
 numbers = []
-add_num = Proc.new {numbers.push(response["number"].to_i)}
-response = HttpConnection.get('/number', {}, &add_num) until response["stop_asking"]
-numbers.push(response["number"].to_i)
+
+loop do
+  response = HttpConnection.get('/number')
+  numbers.push(response["number"].to_i)
+  break if response["stop_asking"]
+end
+
 puts HttpConnection.post('/sum', 'body': { 'the_sum': numbers.inject(:+)})["message"]
 
 ##################################################
@@ -96,7 +100,7 @@ verify_ex_4!
 #
 # (Remember to restart sidekiq after editing the file.)
 
-# GetRequestSender.perform_async('/touchy')
+GetRequestSender.perform_async('/touchy')
 verify_ex_5! # This can take up to 30 seconds
 
 
